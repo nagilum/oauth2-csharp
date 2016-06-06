@@ -49,6 +49,11 @@ public class OAuth2 {
 				"scope",
 				provider.Scope);
 
+		if (!string.IsNullOrWhiteSpace(provider.State))
+			parameters.Add(
+				"state",
+				provider.State);
+
 		var qs = buildQueryString(parameters);
 		var url =
 			provider.AuthUri + "?" +
@@ -78,6 +83,11 @@ public class OAuth2 {
 				"scope",
 				provider.Scope);
 
+		if (!string.IsNullOrWhiteSpace(provider.State))
+			parameters.Add(
+				"state",
+				provider.State);
+
 		var reply = request(
 			provider.AccessTokenUri,
 			payload: buildQueryString(parameters));
@@ -98,6 +108,16 @@ public class OAuth2 {
 			{"refresh_token", refreshToken},
 			{"grant_type", "refresh_token"}
 		};
+
+		if (!string.IsNullOrWhiteSpace(provider.Scope))
+			parameters.Add(
+				"scope",
+				provider.Scope);
+
+		if (!string.IsNullOrWhiteSpace(provider.State))
+			parameters.Add(
+				"state",
+				provider.State);
 
 		var reply = request(
 			provider.AccessTokenUri,
@@ -151,9 +171,11 @@ public class OAuth2 {
 
 			if (dict.ContainsKey("access_token")) response.AccessToken = dict["access_token"];
 			if (dict.ContainsKey("refresh_token")) response.AccessToken = dict["refresh_token"];
+			if (dict.ContainsKey("state")) response.State = dict["state"];
 
 			var seconds = 0;
 
+			if (dict.ContainsKey("expires")) int.TryParse(dict["expires"], out seconds);
 			if (dict.ContainsKey("expires_in")) int.TryParse(dict["expires_in"], out seconds);
 
 			if (seconds > 0)
@@ -178,6 +200,10 @@ public class OAuth2 {
 
 					case "refresh_token":
 						response.RefreshToken = value;
+						break;
+
+					case "state":
+						response.State = value;
 						break;
 
 					case "expires":
@@ -264,6 +290,7 @@ public class OAuth2Provider {
 	public string AccessTokenUri { get; set; }
 	public string UserInfoUri { get; set; }
 	public string Scope { get; set; }
+	public string State { get; set; }
 	public bool Offline = false;
 }
 
@@ -274,4 +301,5 @@ public class OAuth2AuthenticateResponse {
 	public string AccessToken { get; set; }
 	public string RefreshToken { get; set; }
 	public DateTime Expires { get; set; }
+	public string State { get; set; }
 }

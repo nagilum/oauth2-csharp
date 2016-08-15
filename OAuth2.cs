@@ -5,7 +5,7 @@
  * Stian Hanger (pdnagilum@gmail.com)
  * 
  * @source
- * https://github.com/nagilum/float
+ * https://github.com/nagilum/oauth2-csharp
  */
 
 using System;
@@ -170,7 +170,7 @@ public class OAuth2 {
 			var dict = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(reply);
 
 			if (dict.ContainsKey("access_token")) response.AccessToken = dict["access_token"];
-			if (dict.ContainsKey("refresh_token")) response.AccessToken = dict["refresh_token"];
+			if (dict.ContainsKey("refresh_token")) response.RefreshToken = dict["refresh_token"];
 			if (dict.ContainsKey("state")) response.State = dict["state"];
 
 			var seconds = 0;
